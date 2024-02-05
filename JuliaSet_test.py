@@ -30,9 +30,6 @@ def calc_pure_python(desired_width, max_iterations):
         for xcoord in x:
             zs.append(complex(xcoord, ycoord))
             cs.append(complex(c_real, c_imag))
-
-    print("Length of x:", len(x))
-    print("Total elements:", len(zs))
     output = calculate_z_serial_purepython(max_iterations, zs, cs)
     return output
 
