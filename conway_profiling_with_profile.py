@@ -52,7 +52,7 @@ def addGosperGliderGun(i, j, grid):
 
     grid[i : i + 11, j : j + 38] = gun
 
-
+@profile
 def update(grid, N):
     # copy grid since we require 8 neighbors for calculation
     # and we go line by line
