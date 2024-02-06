@@ -19,41 +19,19 @@ vals = [ON, OFF]
 
 def randomGrid(N):
     """returns a grid of NxN random values"""
-    return np.random.choice(vals, N * N, p=[0.2, 0.8]).reshape(N, N)
+    return np.array(np.pad(np.random.choice(vals, N * N, p=[0.2, 0.8]).reshape(N, N), pad_width=1, mode='constant'))
 
 
 def update(grid, N):
     # copy grid since we require 8 neighbors for calculation
     # and we go line by line
-    newGrid = grid.copy()
-    for i in range(N):
-        for j in range(N):
-            # compute 8-neghbor sum
-            # using toroidal boundary conditions - x and y wrap around
-            # so that the simulaton takes place on a toroidal surface.
-            total = int(
-                (
-                    grid[i, (j - 1) % N]
-                    + grid[i, (j + 1) % N]
-                    + grid[(i - 1) % N, j]
-                    + grid[(i + 1) % N, j]
-                    + grid[(i - 1) % N, (j - 1) % N]
-                    + grid[(i - 1) % N, (j + 1) % N]
-                    + grid[(i + 1) % N, (j - 1) % N]
-                    + grid[(i + 1) % N, (j + 1) % N]
-                )
-                / 255
-            )
-            # apply Conway's rules
-            if grid[i, j] == ON:
-                if (total < 2) or (total > 3):
-                    newGrid[i, j] = OFF
-            else:
-                if total == 3:
-                    newGrid[i, j] = ON
-    # update data
-    grid[:] = newGrid[:]
-
+    neighbours = (grid[0:-2, 0:-2] + grid[0:-2, 1:-1] + grid[0:-2, 2:] +
+         grid[1:-1, 0:-2]                 + grid[1:-1, 2:] +
+         grid[2:  , 0:-2] + grid[2:  , 1:-1] + grid[2:  , 2:])
+    birth = (neighbours == 3*ON) & (grid[1:-1, 1:-1] == 0)
+    survive = ((neighbours == 2*ON) | (neighbours == 3*ON)) & (grid[1:-1, 1:-1] == ON)
+    grid[...] = 0
+    grid[1:-1, 1:-1][birth | survive] = ON
 
 # main() function
 def main(grid_size):
