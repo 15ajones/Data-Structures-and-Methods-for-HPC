@@ -31,6 +31,7 @@ def calc_pure_python(desired_width, max_iterations):
             zs.append(complex(xcoord, ycoord))
             cs.append(complex(c_real, c_imag))
     output = calculate_z_serial_purepython(max_iterations, zs, cs)
+    print(sum(output))
     return output
 
 def calculate_z_serial_purepython(maxiter, zs, cs):
@@ -46,12 +47,6 @@ def calculate_z_serial_purepython(maxiter, zs, cs):
         output[i] = n
     return output
 
-# def test_output():
-#     assert calc_pure_python(desired_width=10000, max_iterations=300) == 33219980
-
-# @pytest.mark.parametrize('desired_width, max_iterations, expected',[(10000,300,33219980),()])
-
-# def test_output():
-#     assert calc_pure_python(desired_width, max_iterations) == expected
-
-calc_pure_python(desired_width, max_iterations) == expected
+@pytest.mark.parametrize('desired_width, max_iterations, expected',[(100,20,43742),(1000,30,5609388)])
+def test_output(desired_width, max_iterations, expected):
+    assert sum(calc_pure_python(desired_width, max_iterations)) == expected
